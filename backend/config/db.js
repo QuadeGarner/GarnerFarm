@@ -1,4 +1,6 @@
 import dotenv from "dotenv";
+import { MongoClient } from "mongodb";
+
 dotenv.config();
 
 let db;
@@ -14,7 +16,7 @@ export async function connectDB() {
   try {
     client = new MongoClient(uri);
     await client.connect();
-    db = connect.db("GarnerFarm");
+    db = client.db("GarnerFarm");
     console.log("connected");
     return db;
   } catch (err) {
