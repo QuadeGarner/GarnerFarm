@@ -12,7 +12,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:8081/api/innovations")
+    fetch("http://localhost:8081/api/animals")
       .then((res) => res.json())
       .then((data) => {
         const shuffled = data.sort(() => 0.5 - Math.random());
@@ -51,13 +51,13 @@ export default function Home() {
                   Click here to learn about the innovators.
                 </strong>
               </Card.Text>
-              <Button className="mt-3" onClick={() => nav("/innovators")}>
+              <Button className="mt-3" onClick={() => nav("/animals")}>
                 Learn More
               </Button>
             </Card.Body>
           </Card>
         </Col>
-
+        {/*
         <Col xs={12} md={6}>
           <Card className="h-100">
             <Card.Body className="d-flex flex-column">
@@ -76,6 +76,7 @@ export default function Home() {
             </Card.Body>
           </Card>
         </Col>
+        */}
       </Row>
     </Container>
   );
