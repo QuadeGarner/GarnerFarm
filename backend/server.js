@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { connectDB, getDB } from "./config/db.js";
+import animalRoutes from "./routes/animals.js";
+import animalsOwnedRoutes from "./routes/animalsOwned.js";
 
 dotenv.config();
 
@@ -13,6 +15,8 @@ app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
 
 //ROUTES
+app.use("/api/animals", animalRoutes);
+app.use("/api/animalsOwned", animalsOwnedRoutes);
 
 app.get("/", (req, res) => {
   res.send("Garner Farms API is running");
@@ -118,7 +122,7 @@ async function initializeAnimals() {
           ],
         },
       ];
-      await db.collection("animals").insertMany(animals);
+      await db.collection("Animals").insertMany(animals);
       console.log(`Initialized ${animals.length} animals`);
     }
   } catch (err) {
