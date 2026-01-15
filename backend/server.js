@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
 async function initializeAdmin() {
   try {
     const db = getDB();
-    const adminExist = await db.collection("User").findOne({ role: "admin" });
+    const adminExist = await db.collection("Users").findOne({ role: "admin" });
     if (!adminExist) {
       await db.collection("Users").insertOne({
         fname: "Admin",
@@ -41,7 +41,7 @@ async function initializeAdmin() {
 async function initializeAnimals() {
   try {
     const db = getDB();
-    const count = await db.collection("animals").countDocuments();
+    const count = await db.collection("Animals").countDocuments();
 
     if (count === 0) {
       const animals = [
