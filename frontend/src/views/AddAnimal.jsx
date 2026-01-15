@@ -1,22 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Form, Button, Alert, Spinner, Container } from "react-bootstrap";
+import { Form, Button, Spinner, Container, Row, Col } from "react-bootstrap";
 
 export default function AddAnimal() {
   const navigate = useNavigate();
-
-  // master data
   const [animals, setAnimals] = useState([]);
   const [ownedAnimals, setOwnedAnimals] = useState([]);
   const [selectedAnimal, setSelectedAnimal] = useState(null);
 
-  // form state
   const [formData, setFormData] = useState({
     name: "",
     species: "",
     streetName: "",
     breed: "",
     birthdate: "",
+    sex: "",
     mother: "",
     father: "",
   });
@@ -24,9 +22,6 @@ export default function AddAnimal() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  /* ----------------------------------
-     LOAD DATA
-  -----------------------------------*/
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -45,16 +40,9 @@ export default function AddAnimal() {
     loadData();
   }, []);
 
-  /* ----------------------------------
-     HANDLERS
-  -----------------------------------*/
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleAnimalSelect = (e) => {
@@ -76,19 +64,27 @@ export default function AddAnimal() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-
-    if (!formData.name || !formData.streetName || !formData.breed) {
+    if (
+      !formData.name ||
+      !formData.streetName ||
+      !formData.breed ||
+      !formData.sex
+    ) {
       setError("Please fill out all required fields");
       return;
     }
 
     setLoading(true);
-
     try {
+      const payload = {
+        ...formData,
+        birthdate: formData.birthdate || new Date().toISOString().split("T")[0],
+      };
+
       const res = await fetch("http://localhost:8081/api/animalsOwned", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       if (!res.ok) throw new Error();
@@ -100,130 +96,148 @@ export default function AddAnimal() {
     }
   };
 
-  /* ----------------------------------
-     FILTER PARENTS
-  -----------------------------------*/
-  const possibleParents = ownedAnimals.filter(
-    (a) => a.species === formData.species && a.breed === formData.breed
+  const possibleMothers = ownedAnimals.filter(
+    (a) => a.sex === "Female" && a.streetName === formData.streetName
   );
 
-  /* ----------------------------------
-     RENDER
-  -----------------------------------*/
+  const possibleFathers = ownedAnimals.filter(
+    (a) => a.sex === "Male" && a.streetName === formData.streetName
+  );
+
   return (
-    <Container className="mt-4">
-      <h3 className="mb-3">Add Animal</h3>
+    <>
+      <Row className="justify-content-center">
+        <Col xs={12} md={10} lg={8} xl={6}>
+          <h3 className="mb-4 text-center">Add Animal</h3>
 
-      {error && <Alert variant="danger">{error}</Alert>}
+          {error && <div className="alert alert-danger">{error}</div>}
 
-      <Form onSubmit={handleSubmit}>
-        {/* NAME */}
-        <Form.Group className="mb-3">
-          <Form.Label>Name *</Form.Label>
-          <Form.Control
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
-        </Form.Group>
+          <Form onSubmit={handleSubmit}>
+            <Row>
+              <Col xs={12} md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Name / Tag *</Form.Label>
+                  <Form.Control
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                  />
+                </Form.Group>
+              </Col>
 
-        {/* BIRTHDATE */}
-        <Form.Group className="mb-3">
-          <Form.Label>Birthdate</Form.Label>
-          <Form.Control
-            type="date"
-            name="birthdate"
-            value={formData.birthdate}
-            onChange={handleChange}
-          />
-        </Form.Group>
+              <Col xs={12} md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Birthdate</Form.Label>
+                  <Form.Control
+                    type="date"
+                    name="birthdate"
+                    max={new Date().toISOString().split("T")[0]}
+                    value={formData.birthdate}
+                    onChange={handleChange}
+                  />
+                </Form.Group>
+              </Col>
 
-        {/* ANIMAL TYPE */}
-        <Form.Group className="mb-3">
-          <Form.Label>Animal Type *</Form.Label>
-          <Form.Select
-            value={formData.streetName}
-            onChange={handleAnimalSelect}
-            required
-          >
-            <option value="">Select animal</option>
-            {animals.map((a) => (
-              <option key={a._id} value={a.streetName}>
-                {a.streetName}
-              </option>
-            ))}
-          </Form.Select>
-        </Form.Group>
+              <Col xs={12} md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Animal Type *</Form.Label>
+                  <Form.Select
+                    value={formData.streetName}
+                    onChange={handleAnimalSelect}
+                    required
+                  >
+                    <option value="">Select animal</option>
+                    {animals.map((a) => (
+                      <option key={a._id} value={a.streetName}>
+                        {a.streetName}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
+              </Col>
 
-        {/* BREED */}
-        <Form.Group className="mb-3">
-          <Form.Label>Breed *</Form.Label>
-          <Form.Select
-            name="breed"
-            value={formData.breed}
-            onChange={handleChange}
-            disabled={!selectedAnimal}
-            required
-          >
-            <option value="">Select breed</option>
-            {selectedAnimal?.breed.map((b) => (
-              <option key={b.name} value={b.name}>
-                {b.name}
-              </option>
-            ))}
-          </Form.Select>
-        </Form.Group>
+              <Col xs={12} md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Breed *</Form.Label>
+                  <Form.Select
+                    name="breed"
+                    value={formData.breed}
+                    onChange={handleChange}
+                    disabled={!selectedAnimal}
+                    required
+                  >
+                    <option value="">Select breed</option>
+                    {selectedAnimal?.breed.map((b) => (
+                      <option key={b.name} value={b.name}>
+                        {b.name}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
+              </Col>
 
-        {/* MOTHER */}
-        <Form.Group className="mb-3">
-          <Form.Label>Mother</Form.Label>
-          <Form.Select
-            name="mother"
-            value={formData.mother}
-            onChange={handleChange}
-            disabled={!formData.breed}
-          >
-            <option value="">Unknown</option>
-            {possibleParents.map((a) => (
-              <option key={a._id} value={a._id}>
-                {a.name}
-              </option>
-            ))}
-          </Form.Select>
-        </Form.Group>
+              <Col xs={12} md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Sex *</Form.Label>
+                  <Form.Select
+                    name="sex"
+                    value={formData.sex}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="">Select Sex</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </Form.Select>
+                </Form.Group>
+              </Col>
 
-        {/* FATHER */}
-        <Form.Group className="mb-3">
-          <Form.Label>Father</Form.Label>
-          <Form.Select
-            name="father"
-            value={formData.father}
-            onChange={handleChange}
-            disabled={!formData.breed}
-          >
-            <option value="">Unknown</option>
-            {possibleParents.map((a) => (
-              <option key={a._id} value={a._id}>
-                {a.name}
-              </option>
-            ))}
-          </Form.Select>
-        </Form.Group>
+              <Col xs={12} md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Mother</Form.Label>
+                  <Form.Select
+                    name="mother"
+                    value={formData.mother}
+                    onChange={handleChange}
+                    disabled={!formData.streetName}
+                  >
+                    <option value="">Unknown</option>
+                    {possibleMothers.map((a) => (
+                      <option key={a._id} value={a._id}>
+                        {a.name}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
+              </Col>
 
-        {/* SUBMIT */}
-        <Button type="submit" disabled={loading} className="w-100">
-          {loading ? (
-            <>
-              <Spinner size="sm" className="me-2" />
-              Saving...
-            </>
-          ) : (
-            "Add Animal"
-          )}
-        </Button>
-      </Form>
-    </Container>
+              <Col xs={12} md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Father</Form.Label>
+                  <Form.Select
+                    name="father"
+                    value={formData.father}
+                    onChange={handleChange}
+                    disabled={!formData.streetName}
+                  >
+                    <option value="">Unknown</option>
+                    {possibleFathers.map((a) => (
+                      <option key={a._id} value={a._id}>
+                        {a.name}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
+              </Col>
+            </Row>
+
+            <Button type="submit" disabled={loading} className="w-100">
+              {loading ? <Spinner size="sm" /> : "Add Animal"}
+            </Button>
+          </Form>
+        </Col>
+      </Row>
+    </>
   );
 }

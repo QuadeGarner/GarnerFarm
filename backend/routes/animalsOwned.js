@@ -1,42 +1,63 @@
 import express from "express";
-import { getDB } from "../config/db";
+import { getDB } from "../config/db.js";
 
 const router = express.Router();
 
+/**
+ * GET all owned animals
+ */
 router.get("/", async (req, res) => {
   try {
-    const db = getDb();
+    const db = getDB();
     const ownedAnimals = await db.collection("animalsOwned").find({}).toArray();
+
     res.json(ownedAnimals);
   } catch (err) {
-    res.status(500).json({ message: "Failed to fecth owned Animals" });
+    console.error("GET animalsOwned error:", err);
+    res.status(500).json([]);
   }
 });
+
+/**
+ * ADD a new owned animal
+ */
 router.post("/", async (req, res) => {
   try {
     const db = getDB();
-    const { name, birthdate, streetName, breed, mother, father } = req.body;
+    const { name, birthdate, streetName, species, breed, sex, mother, father } =
+      req.body;
 
-    if (!streetName || !breed || !name || !birthdate) {
-      return res.status(400).json({ message: "Missing required fields" });
+    if (!name || !streetName || !breed || !sex) {
+      return res.status(400).json({
+        message: "Missing required fields",
+      });
     }
+
+    if (!["Male", "Female"].includes(sex)) {
+      return res.status(400).json({ message: "Invalid Sex Option" });
+    }
+
     const newAnimal = {
       name,
-      birthdate: new Date(birthdate),
+      birthdate: new Date(birthdate) || null,
       streetName,
-      species,
+      species: species || null,
       breed,
+      sex,
       mother: mother || null,
       father: father || null,
-      createAt: new Date(),
+      createdAt: new Date(),
     };
 
-    const result = await db.collection("animalsOwned").insertOne(newAnimal);
+    await db.collection("animalsOwned").insertOne(newAnimal);
 
-    res.status(201).json({ message: "Owned Animal added" });
+    res.status(201).json(newAnimal);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Failed to add ownedAnimal" });
+    console.error("POST animalsOwned error:", err);
+    res.status(500).json({
+      message: "Failed to add owned animal",
+    });
   }
 });
+
 export default router;

@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
-import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Container from "react-bootstrap/Container";
 import { useNavigate } from "react-router-dom";
 
 export default function Home() {
@@ -26,11 +26,11 @@ export default function Home() {
   }, []);
 
   return (
-    <Container className="py-5 text-secondary">
+    <>
       {/* Header */}
-      <Row className="mb-4 text-center text-md-start">
-        <Col>
-          <h1 className="fw-bold">Welcome to Garner Farms</h1>
+      <Row className="justify-content-center text-center text-md-start mt-4">
+        <Col xs={12} md={10} lg={8} xl={6}>
+          <h1 className="fw-bold mt-0">Welcome to Garner Farms</h1>
           <p className="mt-3 fs-5">
             Explore innovation, technology, and the people driving change.
           </p>
@@ -38,7 +38,7 @@ export default function Home() {
       </Row>
 
       {/* Cards */}
-      <Row className="g-4">
+      <Row className="g-4 justify-content-center mt-3">
         <Col xs={12} md={6}>
           <Card className="h-100">
             <Card.Body className="d-flex flex-column">
@@ -57,27 +57,9 @@ export default function Home() {
             </Card.Body>
           </Card>
         </Col>
-        {/*
-        <Col xs={12} md={6}>
-          <Card className="h-100">
-            <Card.Body className="d-flex flex-column">
-              <Card.Title>Sign Up</Card.Title>
-              <Card.Text className="flex-grow-1">
-                Create an account in seconds to get started—join now and unlock
-                access to powerful features and exclusive content.
-              </Card.Text>
-              <Button
-                variant="success"
-                className="mt-3"
-                onClick={() => nav("/signup")}
-              >
-                Sign Up
-              </Button>
-            </Card.Body>
-          </Card>
-        </Col>
-        */}
+
+        {/* Example: Add more cards here, xs=12 md=6 for responsive stacking */}
       </Row>
-    </Container>
+    </>
   );
 }
