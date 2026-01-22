@@ -22,5 +22,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-# Node_modules files
-node_modules
