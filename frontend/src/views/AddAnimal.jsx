@@ -78,7 +78,7 @@ export default function AddAnimal() {
     try {
       const payload = {
         ...formData,
-        birthdate: formData.birthdate || new Date().toISOString().split("T")[0],
+        birthdate: formData.birthdate || null,
       };
 
       const res = await fetch("http://localhost:8081/api/animalsOwned", {
@@ -93,6 +93,7 @@ export default function AddAnimal() {
       setError("Failed to save animal");
     } finally {
       setLoading(false);
+      navigate("/ownedAnimals");
     }
   };
 
