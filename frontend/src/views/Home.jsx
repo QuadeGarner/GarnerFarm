@@ -3,7 +3,6 @@ import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Container from "react-bootstrap/Container";
 import { useNavigate } from "react-router-dom";
 
 export default function Home() {
@@ -51,7 +50,7 @@ export default function Home() {
                   Click here to learn about the innovators.
                 </strong>
               </Card.Text>
-              <Button className="mt-3" onClick={() => nav("/animals")}>
+              <Button className="mt-3" onClick={() => nav("/update")}>
                 Learn More
               </Button>
             </Card.Body>

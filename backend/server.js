@@ -32,6 +32,7 @@ async function initializeAdmin() {
         lname: "User",
         email: "admin@example.com",
         password: "admin",
+        role: "admin",
         createdAt: new Date(),
       });
       console.log("Defualt admin user created");
