@@ -1,4 +1,4 @@
-import {getDB} from "../db.js";
+import {getDB} from "../config/db.js";
 import {ObjectId} from "mongodb";
 // get all species
 export async function getAllSpecies (req, res) {

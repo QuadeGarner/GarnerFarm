@@ -1,4 +1,4 @@
-import { express} from 'express';
+import  express  from 'express';
 
 import {
     getAllAnimals,
@@ -6,7 +6,7 @@ import {
     createAnimal,
     updateAnimal,
     deleteAnimal
-} from '../controllers/animalController';
+} from '../controllers/animalController.js';
 
 const router = express.Router();
 

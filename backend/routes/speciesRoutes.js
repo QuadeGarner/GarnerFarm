@@ -1,4 +1,4 @@
-import { express} from 'express';
+import  express  from 'express';
 
 import {
     getAllSpecies,
@@ -6,7 +6,7 @@ import {
     addSpecies,
     updateSpecies,
     deleteSpecies
-} from '../controllers/speciesContoller';
+} from '../controllers/speciesController.js';
 
 const router = express.Router();
 

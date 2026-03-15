@@ -2,9 +2,9 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { connectDB, getDB } from "./config/db.js";
-import animalRoutes from "./routes/animals.js";
-import speciesRoutes from "./routes/species.js";
+import speciesRoutes from "./routes/speciesRoutes.js";
 import breedRoutes from "./routes/breedRoutes.js";
+import animalRoutes from "./routes/animalsRoutes.js"
 
 dotenv.config();
 
@@ -17,8 +17,8 @@ app.use(express.json());
 
 //ROUTES
 app.use("/api/species", speciesRoutes);
-app.use("api/breeds", breedRoutes);
-app.use("api/animals", animalRoutes);
+app.use("/api/breeds", breedRoutes);
+app.use("/api/animals", animalRoutes);
 
 app.get("/", (req, res) => {
   res.send("Garner Farms API is running");
@@ -105,53 +105,59 @@ async function initializeSpecies() {
 async function initializeBreeds() {
   try {
     const db = getDB();
-    const speciesList = await db.collection("Species").find().toArray();
+    const count = await db.collection("Breeds").countDocuments();
+    let breeds = []; // <-- declare breeds here
+
+    if (count === 0) {
+      const speciesList = await db.collection("Species").find().toArray();
     
-    const cattle = speciesList.find(s => s.name === "Cattle");
-    const sheep = speciesList.find(s => s.name === "Sheep");
-    const goat = speciesList.find(s => s.name === "Goat");
-    const pig = speciesList.find(s => s.name === "Pig");
-    const chicken = speciesList.find(s => s.name === "Chicken");
-    const horse = speciesList.find(s => s.name === "Horse");
-    const duck = speciesList.find(s => s.name === "Duck");
-    const turkey = speciesList.find(s => s.name === "Turkey");
-    const rabbit = speciesList.find(s => s.name === "Rabbit");
-    const alpaca = speciesList.find(s => s.name === "Alpaca");
-    const llama = speciesList.find(s => s.name === "Llama");
-    const donkey = speciesList.find(s => s.name === "Donkey");
-    const dog = speciesList.find(s => s.name === "Dog");
-    const cat = speciesList.find(s => s.name === "Cat");
+      const cattle = speciesList.find(s => s.name === "Cattle");
+      const sheep = speciesList.find(s => s.name === "Sheep");
+      const goat = speciesList.find(s => s.name === "Goat");
+      const pig = speciesList.find(s => s.name === "Pig");
+      const chicken = speciesList.find(s => s.name === "Chicken");
+      const horse = speciesList.find(s => s.name === "Horse");
+      const duck = speciesList.find(s => s.name === "Duck");
+      const turkey = speciesList.find(s => s.name === "Turkey");
+      const rabbit = speciesList.find(s => s.name === "Rabbit");
+      const alpaca = speciesList.find(s => s.name === "Alpaca");
+      const llama = speciesList.find(s => s.name === "Llama");
+      const donkey = speciesList.find(s => s.name === "Donkey");
+      const dog = speciesList.find(s => s.name === "Dog");
+      const cat = speciesList.find(s => s.name === "Cat");
 
-    const breeds = [
-      {name: "Angus", speciesId: cattle._id},
-      {name: "Hereford", speciesId: cattle._id},
-      {name: "Suffolk", speciesId: sheep._id},
-      {name: "Dorset", speciesId: sheep._id},
-      {name: "Boer", speciesId: goat._id},
-      {name: "Kiko", speciesId: goat._id},
-      {name: "Yorkshire", speciesId: pig._id},
-      {name: "Berkshire", speciesId: pig._id},
-      {name: "Leghorn", speciesId: chicken._id},
-      {name: "Rhode Island Red", speciesId: chicken._id},
-      {name: "Quarter Horse", speciesId: horse._id},
-      {name: "Thoroughbred", speciesId: horse._id},
-      {name: "Pekin", speciesId: duck._id},
-      {name: "Muscovy", speciesId: duck._id},
-      {name: "Broad Breasted White", speciesId: turkey._id},
-      {name: "Standard Chinchilla", speciesId: rabbit._id},
-      {name: "Huacaya", speciesId: alpaca._id},
-      {name: "Suri", speciesId: alpaca._id},
-      {name: "Classic Llama", speciesId: llama._id},
-      {name: "Woolly Llama", speciesId: llama._id},
-      {name: "Standard Donkey", speciesId: donkey._id},
-      {name: "Miniature Donkey", speciesId: donkey._id},
-      {name: "Labrador Retriever", speciesId: dog._id},
-      {name: "German Shepherd", speciesId: dog._id},
-      {name: "Siamese", speciesId: cat._id},
-      {name: "Maine Coon", speciesId: cat._id},
-    ];
+      breeds = [
+        {name: "Angus", speciesId: cattle._id},
+        {name: "Hereford", speciesId: cattle._id},
+        {name: "Suffolk", speciesId: sheep._id},
+        {name: "Dorset", speciesId: sheep._id},
+        {name: "Boer", speciesId: goat._id},
+        {name: "Kiko", speciesId: goat._id},
+        {name: "Yorkshire", speciesId: pig._id},
+        {name: "Berkshire", speciesId: pig._id},
+        {name: "Leghorn", speciesId: chicken._id},
+        {name: "Rhode Island Red", speciesId: chicken._id},
+        {name: "Quarter Horse", speciesId: horse._id},
+        {name: "Thoroughbred", speciesId: horse._id},
+        {name: "Pekin", speciesId: duck._id},
+        {name: "Muscovy", speciesId: duck._id},
+        {name: "Broad Breasted White", speciesId: turkey._id},
+        {name: "Standard Chinchilla", speciesId: rabbit._id},
+        {name: "Huacaya", speciesId: alpaca._id},
+        {name: "Suri", speciesId: alpaca._id},
+        {name: "Classic Llama", speciesId: llama._id},
+        {name: "Woolly Llama", speciesId: llama._id},
+        {name: "Standard Donkey", speciesId: donkey._id},
+        {name: "Miniature Donkey", speciesId: donkey._id},
+        {name: "Labrador Retriever", speciesId: dog._id},
+        {name: "German Shepherd", speciesId: dog._id},
+        {name: "Siamese", speciesId: cat._id},
+        {name: "Maine Coon", speciesId: cat._id},
+      ];
 
-    await db.collection("Breeds").insertMany(breeds);
+      await db.collection("Breeds").insertMany(breeds);
+    }
+
     console.log(`Initialized ${breeds.length} breeds`);
   } catch (err) {
     console.error("Error Initializing breeds", err);
