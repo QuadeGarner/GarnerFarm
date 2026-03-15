@@ -1,9 +1,12 @@
 import { Routes, Route } from "react-router-dom";
 import Home from "./views/Home";
 import Navbar from "./components/NavBar";
-import AddAnimal from "./views/AddAnimal";
-import EditAnimal from "./views/EditAnimal";
-import ViewAllAnimalsOwned from "./views/ViewAllAnimalsOwned";
+import AddAnimal from "./views/AnimalViews/AddAnimal";
+import EditAnimal from "./views/AnimalViews/EditAnimal";
+import ViewAllAnimalsOwned from "./views/AnimalViews/ViewAllAnimalsOwned";
+import ViewAllSpecies from "./views/SpeciesViews/ViewAllSpecies";
+import EditSpecies from "./views/SpeciesViews/EditSpecies";
+import AddSpecies from "./views/SpeciesViews/AddSpecies";
 
 import "./App.css";
 
@@ -18,6 +21,11 @@ export default function App() {
           <Route path="/update/:id" element={<EditAnimal/>} />
           <Route path="/delete/:id" element={<EditAnimal/>} />
           <Route path="/ownedAnimals" element={<ViewAllAnimalsOwned />} />
+          <Route path="/species" element={<ViewAllSpecies />} />
+          <Route path="/addBreed/:id" element={<EditSpecies />} />
+          <Route path="/updateSpecies/:id" element={<EditSpecies />} />
+          <Route path="/deleteSpecies/:id" element={<EditSpecies />} />
+          <Route path ="/addSpecies" element={<AddSpecies />}/>
         </Routes>
       </main>
     </div>
