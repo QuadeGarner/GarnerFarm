@@ -22,22 +22,27 @@ export default function ViewAllSpecies() {
 
     // handle delete
     const handleDelete = async (id) => {
-        if (window.confirm("Are you sure you want to delete this species?")) {
-            try {
-                const res = await fetch(`http://localhost:8081/api/species/${id}`, {
-                    method: "DELETE",
-                });
-                if (res.ok) {
-                    setSpecies(species.filter(s => s._id !== id));
-                } else {
-                    alert("Failed to delete species");
-                }
-            } catch (err) {
-                console.error("Failed to delete species", err);
-                alert("Failed to delete species");
-            }
+    if (!window.confirm("Are you sure you want to delete this species?")) return;
+
+    try {
+        const res = await fetch(`http://localhost:8081/api/species/${id}`, {
+            method: "DELETE",
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+            setSpecies(prev => prev.filter(s => s._id !== id));
+        } else {
+            console.error(data);
+            alert(data.message || "Failed to delete species");
         }
-    };
+
+    } catch (err) {
+        console.error("Delete error:", err);
+        alert("Server error deleting species");
+    }
+};
 
     return (
         <Row className="justify-content-center">
@@ -50,16 +55,8 @@ export default function ViewAllSpecies() {
                     <ul className="list-group mt-3">
                         {species.map((s) => (
                             <li key={s._id} className="list-group-item">
-                                <h5>{s.streetName}</h5>
-                                <strong>Breeds:</strong>
-                                <ul className="list-group mt-2">
-                                    {s.breed?.map((b, index) => (
-                                        <li key={index} className="list-group-item">
-                                            {b.name}
-                                        </li>
-                                    ))}
-                                </ul>
-
+                                <h5>{s.name}</h5>
+                                <h6> {s.scientificName}</h6>
                                 <Button
                                     variant="primary"
                                     onClick={() => navigate(`/updateSpecies/${s._id}`)}
@@ -85,7 +82,8 @@ export default function ViewAllSpecies() {
                     </ul>
                 )}
 
-                <Button className="mt-3" onClick={() => navigate("/addSpecies")}>
+                <Button className="mt-3" onClick={() => navigate("/addSpecies")
+                }>
                     Add New Species
                 </Button>
             </Col>

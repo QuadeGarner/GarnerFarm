@@ -66,21 +66,23 @@ export async function updateSpecies  (req, res) {
     }
 };
 // delete species 
-export async function deleteSpecies (req, res){
+export async function deleteSpecies(req, res) {
     try {
         const db = getDB();
         const { id } = req.params;
-        
-        const result = await db.collection("Species").findOne(id);
-        if (result.matchedCount === 0){
-            return res.status(500).json({message: "Invalid Id "});
-        }
-        else{
-            await db.collection("Species").deleteOne(id);
-            res.status(201).json({message : " Successfully deleted Species"});
+
+        const result = await db.collection("Species").deleteOne({
+            _id: new ObjectId(id)
+        });
+
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ message: "Species not found" });
         }
 
-    }catch (err){
-        res.status(404).json({message : "Faild to delete species"});
+        res.json({ message: "Species deleted successfully" });
+
+    } catch (err) {
+        console.error("Delete species error:", err);
+        res.status(500).json({ message: "Faild to delete species" });
     }
 }
