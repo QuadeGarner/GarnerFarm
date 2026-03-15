@@ -1,16 +1,18 @@
-import express from "express";
-import { getDB } from "../config/db.js";
+import { express} from 'express';
+
+import {
+    getAllAnimals,
+    getAnimalsByBreed,
+    createAnimal,
+    updateAnimal,
+    deleteAnimal
+} from '../controllers/animalController';
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
-  try {
-    const db = getDB();
-    const animals = await db.collection("Animals").find({}).toArray();
-    res.json(animals);
-  } catch (err) {
-    res.status(500).json({ message: "Failed to fetch animals" });
-  }
-});
+router.get("/", getAllAnimals);
+router.get("/breed/:breedId", getAnimalsByBreed);
+router.post("/", createAnimal);
+router.delete("/:id", deleteAnimal);
 
 export default router;
