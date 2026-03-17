@@ -25,13 +25,13 @@ export async function getBreedsBySpecies(req, res){
 export async function createBreed(req, res){
     try{
         const db = getDB();
-        const { name, speciesID} = req.body;
-        if(!name || !speciesID){
+        const { name, speciesId} = req.body;
+        if(!name || !speciesId){
             return res.status(400). json({message: "Messing required fields"});
         }
         const newBreed = {
             name, 
-            speciesID
+            speciesId: new ObjectId(speciesId)
         };
         const result = await db.collection("Breeds").insertOne(newBreed);
 
